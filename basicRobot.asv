@@ -1,0 +1,27 @@
+
+
+classdef basicRobot
+    properties
+        robotID        %robot name
+        phi            %robot wheel velocities (shared)
+        alpha1         %angle wheelbase 1
+        alpha2         %angle wheelbase 2
+        beta1          %angle wheel 1
+        beta2          %angle wheel 2
+        r1             %wheel 1 radius
+        r2             %wheel 2 radius
+        b              %wheel base of robot
+        theta0         %initial heading of the robot
+    end
+    methods
+        function globalVeloc = getVelocity(obj,theta)
+            J1 = [cos(obj.alpha1 + obj.beta1) sin(obj.alpha1 + obj.beta1) obj.b/2*sin(obj.beta1) ; cos(obj.alpha2 + obj.beta2) sin(obj.alpha2 + obj.beta2) obj.b/2*sin(obj.beta2)];
+            J2 = diag(obj.r1, obj.r2);
+            Rz = [cos(theta) -sin(theta) 0; sin(theta) cos(theta) 0; 0 0 1];
+            globalVeloc = inv(Rz)*inv(J1)*obj.phi*J2;
+        end
+        
+        function globalPose = getPose(obj,
+    end
+            
+            
