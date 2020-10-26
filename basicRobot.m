@@ -17,13 +17,15 @@ classdef basicRobot
         theta0         %initial heading of the robot
     end
     methods
-        function globalVeloc = getVelocity(obj,theta)
+        function globalVeloc = getVelocity(obj)
             %getVelocity returns the global velocity of a robot based on
             %geometry and heading
-            J1 = [cos(obj.alpha1 + obj.beta1) sin(obj.alpha1 + obj.beta1) obj.b/2*sin(obj.beta1) ; cos(obj.alpha2 + obj.beta2) sin(obj.alpha2 + obj.beta2) obj.b/2*sin(obj.beta2)];
-            J2 = diag(obj.r1, obj.r2);
-            Rz = [cos(theta) -sin(theta) 0; sin(theta) cos(theta) 0; 0 0 1];
-            globalVeloc = inv(Rz)*inv(J1)*obj.phi*J2; % get xdot, ydot, omega
+            J1 = [sin(obj.alpha1 + obj.beta1) -cos(obj.alpha1 + obj.beta1) -obj.b/2*cos(obj.beta1) ; sin(obj.alpha2 + obj.beta2) -cos(obj.alpha2 + obj.beta2) -obj.b/2*cos(obj.beta2) ; cos(obj.alpha1 + obj.beta1) sin(obj.alpha1 + obj.beta1) obj.b/2*sin(obj.beta1)];
+            J2 = eye(3).*[obj.r1; obj.r2 ; 0];
+            Rz = [cos(obj.theta0) -sin(obj.theta0) 0; sin(obj.theta0) cos(obj.theta0) 0; 0 0 1];
+            %invJ1 = inv(J1)
+            %invRz = inv(Rz)
+            globalVeloc = inv(Rz)*inv(J1)*obj.phi.*J2; % get xdot, ydot, omega
         end
         
         function globalPose = getPose(dt, xdot, ydot, omega)
