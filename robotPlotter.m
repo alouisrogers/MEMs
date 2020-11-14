@@ -79,6 +79,30 @@ title('Theta vs. Time')
 xlabel('Time (s)')
 ylabel('Mapped Heading (0-360 Degrees)')
 
+figure(1114)
+dia = 0.0762;
+t = 0:pi/25:2*pi;
+r = dia + cos(t);
+r = wrap2Number(r,0.0762);
+
+order = 3;
+framelen = 11;
+sgf = sgolayfilt(r,order,framelen);
+plot (t,r)
+hold on
+plot(sgf,'.-')
+% [X,Y,Z] = cylinder(r);
+% surf(X,Y,Z)
+
+function lon = wrap2Number(lon,number)
+
+positiveInput = (lon > 0);
+lon = mod(lon, number);
+lon((lon == 0) & positiveInput) = number;
+end
+
+
+
 
 
 
