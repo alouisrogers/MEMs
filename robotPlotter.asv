@@ -102,9 +102,6 @@ hs = surf(X,Z,Y);
 set(hs,'FaceColor',[.7 .7 .7],'FaceAlpha',0.5,'EdgeColor', 'none') ;
 hold on
 
-%To do: 11/14/20: research how to map similar xp, yp, to x, y of cylinder,
-%basically just want traj to change in axial direction, might need new
-%projection method
 phi = abs((poseX)/(dia)*2*pi);
 xp = r.*cos(phi);
 yp = r.*sin(phi);
