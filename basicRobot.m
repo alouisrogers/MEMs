@@ -43,9 +43,9 @@ classdef basicRobot
             J1 = [sin(ab1) -cos(ab1) -obj.b/2*cos(b1) ; sin(ab2) -cos(ab2) -obj.b/2*cos(b2) ; cos(ab1) sin(ab1) obj.b/2*sin(b1)];
             J2 = eye(3).*[obj.r1; obj.r2 ; 0]*[obj.phi1; obj.phi2; 0];
             Rz = [cos(obj.theta0) -sin(obj.theta0) 0; sin(obj.theta0) cos(obj.theta0) 0; 0 0 1];
-            %invJ1 = inv(J1)
-            %invRz = inv(Rz)
-            globalVeloc = inv(Rz)*inv(J1)*J2; % get xdot, ydot, omega (this is defined gross but lazy
+%             invJ1 = inv(J1)
+%             invRz = inv(Rz)
+            globalVeloc = inv(Rz)*inv(J1)*J2; % get xdot, ydot, omega (this is defined gross but lazy)
         end
         
         function globalPose = getPose(dt, xdot, ydot, omega)

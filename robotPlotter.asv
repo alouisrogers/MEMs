@@ -3,6 +3,20 @@ clc; clear;
 %Script to plot robot trajectories for different geometries using:
 %basicRobot Class
 
+%In progress:
+%11/15/20: modify loop to reverse wheel velicities
+    %test zig zag trajectory patterns for max robot coverage
+    
+    %Overall: test ways to cover 2D plane using only changes in wheel
+    %directions/velocities with time
+    %END result: failure, can only change trajectories by changing wheel
+    %dia
+
+%Implement trajectory mapping to intestinal profile in 3D (started
+    %11/14/20)
+%Implement inverse kinematics controller to navigate to a desired point
+
+
 %define time of simulation
 dt = 0.1;
 t = 0:dt:20;
@@ -21,7 +35,7 @@ t = 0:dt:20;
     % theta0  = initial heading
     
               %(robotID, phi1, phi2, alpha1, alpha2, beta1, beta2, r1, r2, b, theta0)
-robot1 = basicRobot('robot1', 4, 4, pi/2, -pi/2, 0, pi, 0.0015, 0.0025, 0.009, pi/2);
+robot1 = basicRobot('robot1', 4, 4, pi/2, -pi/2, 0, pi, 0.0015, 0.0025, 0.009, pi/3);
 
 %Pre-allocate pose storage vectors for plotting
 poseX = zeros(1,length(t));
@@ -30,7 +44,7 @@ poseTheta = zeros(1,length(t));
 poseTheta(1) = robot1.theta0;
 
 %Begin time stepping
-for i = 2:length(t)+1
+for i = 2:length(t)+1      %index of 2 makes sure robot pose vectors start at origin
     %access velocity from robot class static methods
     globalVelocity = robot1.getVelocity(robot1);
     xdot = globalVelocity(1);
@@ -93,8 +107,8 @@ r = dia - cos(t)*0.07*dia;
 %hold on
 % plot(sgf,'.-')
 
-zmin = -0.05;
-zmax = 0.05;
+zmin = -0.1;
+zmax = 0.1;
 
 [X,Y,Z] = cylinder(r);
 Z = zmin + (zmax-zmin)*Z;
@@ -102,12 +116,16 @@ hs = surf(X,Z,Y);
 set(hs,'FaceColor',[.7 .7 .7],'FaceAlpha',0.5,'EdgeColor', 'none') ;
 hold on
 
+%To do: 11/14/20: research how to map similar xp, yp, to x, y of cylinder,
+%basically just want traj to change in axial direction, might need new
+%projection method
 phi = abs((poseX)/(dia)*2*pi);
 xp = r.*cos(phi);
 yp = r.*sin(phi);
 zp = poseY ;
 
 hp = plot3(xp,zp,yp,'-ok') ;
+title('Simulated 3D Trajectories on Colon Wall')
 
 
 % function lon = wrap2Number(lon,number)
