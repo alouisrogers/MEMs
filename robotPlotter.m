@@ -19,7 +19,7 @@ clc; clear;
 
 %define time of simulation
 dt = 0.1;
-t = 0:dt:20;
+t = 0:dt:300;
 
 %define properties of first robot class (CCW = + convention)
     % robotID = robot name
@@ -35,7 +35,8 @@ t = 0:dt:20;
     % theta0  = initial heading
     
               %(robotID, phi1, phi2, alpha1, alpha2, beta1, beta2, r1, r2, b, theta0)
-robot1 = basicRobot('robot1', 4, 4, pi/2, -pi/2, 0, pi, 0.0015, 0.0025, 0.009, pi/2);
+robot1 = basicRobot('robot1', 5, 5, pi/2, -pi/2, 0, pi, 0.003, 0.003, 0.009, pi/2.5);
+%11/27/20: Current Params Set to
 
 %Pre-allocate pose storage vectors for plotting
 poseX = zeros(1,length(t));
@@ -71,19 +72,19 @@ poseTheta = wrapTo360(rad2deg(poseTheta));
 
 %Plotting
 figure(1111)
-%title('Robot Position Over ', num2str(t(end)),' Seconds')
+
 plot(t,poseY(1:end-1), 'r.')
 hold on
 plot(t,poseX(1:end-1), 'm.')
 xlabel('time (s)')
 ylabel('X and Y Position (m)')
-title('Robot Position vs. Time Over 20 Seconds')
+title(['Robot Position Over ',num2str(t(end)),' Seconds'])
 legend('t vs. y', 't vs. x')
 
 figure(1112)
 plot(poseX,poseY, 'b.')
 title('X vs. Y Position')
-legend(sprintf('Trajectory Diameter = %0.3f m',trajDia),'Location','best')
+legend(sprintf('Maximum Displacement = %0.3f m',trajDia),'Location','best')
 xlabel('X Position (m)')
 ylabel('Y Position (m)')
 
@@ -107,49 +108,47 @@ r = dia - cos(t)*0.07*dia;
 %hold on
 % plot(sgf,'.-')
 
-zmin = -0.1;
-zmax = 0.1;
-
-[X,Y,Z] = cylinder(r);
+zmin = -0.9;
+zmax = 0.9;
+[X,Y,Z] = cylinder(dia);
 Z = zmin + (zmax-zmin)*Z;
-hs = surf(X,Z,Y);
-set(hs,'FaceColor',[.7 .7 .7],'FaceAlpha',0.5,'EdgeColor', 'none') ;
+surf(X,Z,Y,'FaceColor',[.7 .7 .7],'FaceAlpha',0.5,'EdgeColor', 'none') ;
 hold on
 
-%To do: 11/14/20: research how to map similar xp, yp, to x, y of cylinder,
-%basically just want traj to change in axial direction, might need new
-%projection method
-phi = abs((poseX)/(dia)*2*pi);
-xp = r.*cos(phi);
-yp = r.*sin(phi);
+%To do: 11/27/20: Change Plotting method to just project on a cylinder,
+%makes things simpler: https://stackoverflow.com/questions/26408863/bending-a-plane-into-a-closed-surface-cylinder
+
+phi = (poseX)/(max(poseX)-min(poseX))*2*pi;
+xp = dia*cos(phi);
+yp = dia*sin(phi);
 zp = poseY ;
 
-hp = plot3(xp,zp,yp,'-ok') ;
-title('Simulated 3D Trajectories on Colon Wall')
-
-
-% function lon = wrap2Number(lon,number)
-% 
-% positiveInput = (lon > 0);
-% lon = mod(lon, number);
-% lon((lon == 0) & positiveInput) = number;
+% for i = 1:length(xp)
+%     for j = 1:length(X(:,1))
+%         for k = 1:length(X(1,:))
+%             if (xp(i) - X(j,k)) > 0.001
+%                 xp(i) = X(j,k);
+%             end
+%         end
+%     end
+% end
+% for i = 1:length(yp)
+%     for j = 1:length(Y(:,1))
+%         for k = 1:length(Y(1,:))
+%             if (yp(i) - Y(j,k)) > 0.001
+%                 yp(i) = Y(j,k);
+%             end
+%         end
+%     end
 % end
 
-% 
-% z2 = y1;
-% phi = (x1-xmin)/(xmax-xmin)*2*pi;
-% x2 = Rc*cos(phi);
-% y2 = Rc*sin(phi);
-% 
-% %// Plot cylinder
-% [xc yc zc] = cylinder(Rc*ones(1,100),100);
-% zc = zminc + (zmaxc-zminc)*zc;
-% surf(xc,yc,zc)
-% shading flat
-% hold on
-% 
-% %// Plot bent spiral
-% plot3(x2,y2,z2, 'k.-');
+hp = plot3(xp,zp,yp,'-o','color', rand(1,3) );
+title('Simulated 3D Trajectories on Colon Wall')
+xlabel('X Position (m)')
+ylabel('Y Position (m)')
+zlabel('Z Position (m)')
+
+
 
 
 
