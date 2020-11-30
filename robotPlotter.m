@@ -19,7 +19,7 @@ clc; clear;
 
 %define time of simulation
 dt = 0.1;
-t = 0:dt:300;
+t = 0:dt:20;
 
 %define properties of first robot class (CCW = + convention)
     % robotID = robot name
@@ -35,7 +35,7 @@ t = 0:dt:300;
     % theta0  = initial heading
     
               %(robotID, phi1, phi2, alpha1, alpha2, beta1, beta2, r1, r2, b, theta0)
-robot1 = basicRobot('robot1', 5, 5, pi/2, -pi/2, 0, pi, 0.003, 0.003, 0.009, pi/2.5);
+robot1 = basicRobot('robot1', 3, 3, pi/2, -pi/2, 0, pi, 0.005, 0.005, 0.01, pi/6);
 %11/27/20: Current Params Set to
 
 %Pre-allocate pose storage vectors for plotting
@@ -118,7 +118,7 @@ hold on
 %To do: 11/27/20: Change Plotting method to just project on a cylinder,
 %makes things simpler: https://stackoverflow.com/questions/26408863/bending-a-plane-into-a-closed-surface-cylinder
 
-phi = (poseX)/(max(poseX)-min(poseX))*2*pi;
+phi = ((poseX)/(max(poseX)-min(poseX))*2*pi) + pi/4;
 xp = dia*cos(phi);
 yp = dia*sin(phi);
 zp = poseY ;
